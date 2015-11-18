@@ -137,7 +137,7 @@ def graphSearch(problem, heuristic=nullHeuristic):
         if fringe == []:
             return None
 
-        node = fringe.pop()
+        node = fringe.pop(0)
 
         if problem.isGoalState(node.state):
             return gsSolution(node)
