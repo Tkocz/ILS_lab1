@@ -231,7 +231,7 @@ def gsSolution(node):
 
     solution = []
 
-    while (node.parent is not None):
+    while node.parent:
         solution.append(node.action)
         node = node.parent
 
