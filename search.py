@@ -212,7 +212,7 @@ def gsExpand(node, problem):
                     specified node.
     """
 
-    successors = []
+    successors = []''
     for state, action, cost in problem.getSuccessors(node.state):
         childNode = node.createChild(action, state, cost)
         successors.append(childNode)
