@@ -108,7 +108,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 #   CLASSES
 # -------------------------------------------------
 
-
 class Node:
     """ Represents a search node. """
 
@@ -163,7 +162,6 @@ class Node:
 # -------------------------------------------------
 #   FUNCTIONS
 # -------------------------------------------------
-
 
 def graphSearch(problem):
     """
@@ -242,7 +240,6 @@ def gs_solution(node):
     # goal state back (through the graph) towards the initial state!
     solution.reverse()
     return solution
-
 
 # ----------------------------------------------------------------------------
 
