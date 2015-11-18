@@ -182,6 +182,7 @@ def graphSearch(problem):
     fringe.append(rootNode)
 
     while fringe:
+        """ TODO: Let client specify fringe. """
         node = fringe.pop(0)
 
         """ Check if we have reached the goal state. This is what the pseudo-
