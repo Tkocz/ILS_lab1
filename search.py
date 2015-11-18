@@ -99,21 +99,21 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-""" ----------------------------------------------------------------------- """
-""" Code below by: PYTHON TRIFORCE TEAM   ▲
-                                         ▲ ▲
-"""
+# ----------------------------------------------------------------------------
+# Code below by: PYTHON TRIFORCE TEAM   ▲
+#                                      ▲ ▲
+# ----------------------------------------------------------------------------
 
-"""-----------------------------------------------
- " CLASS
- "---------------------------------------------"""
+# -------------------------------------------------
+#   CLASSES
+# -------------------------------------------------
 
 class Node:
     """ Represents a search node. """
 
-    """-----------------------------------------------
-     " METHODS
-     "---------------------------------------------"""
+    # -------------------------------------------------
+    #   METHODS
+    # -------------------------------------------------
 
     def __init__(self, parent, action, state, depth, cost):
         """
@@ -159,9 +159,9 @@ class Node:
         """
         return Node(None, None, state, 0, 0)
 
-"""-----------------------------------------------
- " FUNCTIONS
- "---------------------------------------------"""
+# -------------------------------------------------
+#   FUNCTIONS
+# -------------------------------------------------
 
 def graphSearch(problem):
     """
@@ -176,28 +176,28 @@ def graphSearch(problem):
     closed = []
     fringe = []
 
-    """ Add the root node. It doesn't have a parent, nor an action or cost, and
-        the depth is zero. """
+    # Add the root node.  It doesn't have a parent, nor an action or cost, and
+    # the depth is zero. """
     rootNode = Node.createRoot(problem.getStartState())
     fringe.append(rootNode)
 
     while fringe:
-        """ TODO: Let client specify fringe. """
+        # TODO: Let client specify fringe.
         node = fringe.pop(0)
 
-        """ Check if we have reached the goal state. This is what the pseudo-
-            code tells us to do, as opposed to what Mr. Gabrielsson claims;
-            that we should NOT detect goal state nodes directly after popping
-            them from the fringe! How peculiar! ;-) Either way, it seems to
-            work fine. """
+        # Check if we have reached the goal state.  This is what the pseudo-
+        # code tells us to do, as opposed to what Mr. Gabrielsson claims;
+        # that we should NOT detect goal state nodes directly after popping
+        # them from the fringe!  How peculiar!  ;-) Either way, it seems to
+        # work fine.
         if problem.isGoalState(node.state): return gsSolution(node)
 
-        """ Make sure we don't expand this particular state more than once. """
+        # Make sure we don't expand this particular state more than once.
         if node.state not in closed:
             closed.append(node.state)
             fringe.extend(gsExpand(node, problem))
 
-    """ The fringe was exhausted; no solution could be found. """
+    # The fringe was exhausted; no solution could be found.
     return None
 
 
@@ -236,13 +236,13 @@ def gsSolution(node):
         solution.append(node.action)
         node = node.parent
 
-    """ The solution needs to be reversed since we are working our way from the
-        goal state back (through the graph) towards the initial state! """
+    # The solution needs to be reversed since we are working our way from the
+    # goal state back (through the graph) towards the initial state!
     solution.reverse()
     return solution
 
 
-""" ----------------------------------------------------------------------- """
+# ----------------------------------------------------------------------------
 
 
 # Abbreviations
