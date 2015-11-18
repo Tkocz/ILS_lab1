@@ -100,7 +100,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     util.raiseNotDefined()
 
 # ----------------------------------------------------------------------------
-# Code below by: PYTHON TRIFORCE TEAM   ▲
+# Code below by: PYTH0N TRIF0RCE TEAM   ▲
 #                                      ▲ ▲
 # ----------------------------------------------------------------------------
 
