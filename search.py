@@ -128,7 +128,7 @@ def gsSolution(node):
     solution.reverse()
     return solution
 
-def graphSearch(problem, heuristic=nullHeuristic):
+def graphSearch(problem):
     """Graph search algo impl blah blah blah"""
     closed = []
     fringe = [ Node(None, None, problem.getStartState(), 0, 0) ]
