@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Uppgift3.1 (graphSearch)" type="PythonConfigurationType" factoryName="Python">
+  <configuration default="false" name="Uppgift3.2 (DFS)" type="PythonConfigurationType" factoryName="Python">
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
@@ -13,7 +13,7 @@
     <module name="trunk" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pacman.py" />
-    <option name="PARAMETERS" value="-l smallMaze -p SearchAgent -a fn=graphSearch" />
+    <option name="PARAMETERS" value="-l smallMaze -p SearchAgent -a fn=dfs" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <method />
   </configuration>

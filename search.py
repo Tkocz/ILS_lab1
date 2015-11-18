@@ -75,12 +75,16 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.Stack()
+    solution = graphSearch(problem, fringe)
+    return solution
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.Queue()
+    solution = graphSearch(problem, fringe)
+    return solution
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -163,7 +167,7 @@ class Node:
 #   FUNCTIONS
 # -------------------------------------------------
 
-def graph_search(problem):
+def graph_search(problem, fringe):
     """
     Solves the specified problem by using a graph search algorithm.
 
@@ -174,27 +178,29 @@ def graph_search(problem):
     """
 
     closed = []
-    fringe = []
 
     # Add the root node.  It doesn't have a parent, nor an action or cost, and
     # the depth is zero. """
     root_node = Node.create_root(problem.getStartState())
-    fringe.append(root_node)
+    fringe.push(root_node)
 
-    while fringe:
-        # TODO: Let client specify fringe.
+    while not fringe.isEmpty():
         node = fringe.pop()
 
         # Check if we have reached the goal state.  This is what the pseudo-
-        # code tells us to do, as opposed to what Mr. Gabrielsson claims; that
-        # we should NOT detect goal state nodes directly after popping them from
-        # the fringe!  How peculiar!  ;-) Either way, it seems to work fine.
+        # code tells us to do, as opposed to what Mr. Gabrielsson claims;
+        # that we should NOT detect goal state nodes directly after popping
+        # them from the fringe!  How peculiar!  ;-) Either way, it seems to
+        # work fine.
         if problem.isGoalState(node.state): return gs_solution(node)
 
         # Make sure we don't expand this particular state more than once.
         if node.state not in closed:
             closed.append(node.state)
-            fringe.extend(gs_expand(node, problem))
+            tempList = []
+            tempList.extend(gs_expand(node, problem))
+            for member in tempList:
+                fringe.push(member)
 
     # The fringe was exhausted; no solution could be found.
     return None
