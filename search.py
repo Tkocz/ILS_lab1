@@ -142,8 +142,8 @@ class Node:
         :param action: The action taken to reach the child node from its
                        parent.
         :param state:  The child node state.
-        :param cost:   The cost of reaching the child node state from its
-                       parent node state through taking the specified action.
+        :param cost:   The cost of reaching the child node state from its parent
+                       node state through taking the specified action.
 
         :return: A child node.
         """
@@ -188,10 +188,9 @@ def graphSearch(problem):
         node = fringe.pop()
 
         # Check if we have reached the goal state.  This is what the pseudo-
-        # code tells us to do, as opposed to what Mr. Gabrielsson claims;
-        # that we should NOT detect goal state nodes directly after popping
-        # them from the fringe!  How peculiar!  ;-) Either way, it seems to
-        # work fine.
+        # code tells us to do, as opposed to what Mr. Gabrielsson claims; that
+        # we should NOT detect goal state nodes directly after popping them from
+        # the fringe!  How peculiar!  ;-) Either way, it seems to work fine.
         if problem.isGoalState(node.state): return gs_solution(node)
 
         # Make sure we don't expand this particular state more than once.
