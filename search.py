@@ -119,12 +119,16 @@ def gsExpand(node, problem):
     return successors
 
 def gsSolution(node):
-    """ does shit """
+    """ Retrieves the solution as a list of actions to end up at the specified
+        node state """
     solution = []
+
     while (node.parent is not None):
         solution.append(node.action)
         node = node.parent
 
+    """ The solution needs to be reversed since we are working our way from the
+        goal state back (through the graph) towards the initial state! """
     solution.reverse()
     return solution
 
@@ -137,7 +141,7 @@ def graphSearch(problem):
         if fringe == []:
             return None
 
-        node = fringe.pop(0)
+        node = fringe.pop()
 
         if problem.isGoalState(node.state):
             return gsSolution(node)
