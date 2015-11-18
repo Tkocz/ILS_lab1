@@ -13,7 +13,7 @@
     <module name="ILS_lab1" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pacman.py" />
-    <option name="PARAMETERS" value="-l bigMaze -p SearchAgent -a fn=graphSearch" />
+    <option name="PARAMETERS" value="-l smallMaze -p SearchAgent -a fn=graphSearch" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <method />
   </configuration>

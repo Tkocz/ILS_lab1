@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 """
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
@@ -97,30 +99,135 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-""" -------------------------------------------------------------------------------- """
+""" ----------------------------------------------------------------------- """
+""" Code below by: PYTHON TRIFORCE TEAM   ▲
+                                         ▲ ▲
+"""
+
+"""-----------------------------------------------
+ " CLASS
+ "---------------------------------------------"""
 
 class Node:
     """ Represents a search node. """
+
+    """-----------------------------------------------
+     " METHODS
+     "---------------------------------------------"""
+
     def __init__(self, parent, action, state, depth, cost):
+        """
+        Constructor.
+
+        :param parent: The parent node.
+        :param action: The action responsible for the node state.
+        :param state:  The node state.
+        :param depth:  The depth of the node (in a graph).
+        :param cost:   The cost (g) to reach the node from the root.
+
+        :return:       A node with the specified parameters set.
+        """
+
         self.action = action
         self.cost   = cost
         self.depth  = depth
         self.parent = parent
         self.state  = state
 
+    def createChild(self, action, state, cost):
+        """
+        Creates a child node.
+
+        :param action: The action taken to reach the child node from its
+                       parent.
+        :param state:  The child node state.
+        :param cost:   The cost of reaching the child node state from its
+                       parent node state through taking the specified action.
+
+        :return: A child node.
+        """
+        return Node(self, action, state, self.depth+1, cost)
+
+    @staticmethod
+    def createRoot(state):
+        """
+        Creates a root node.
+
+        :param state: The root node state.
+
+        :return: A node representing the specified state.
+        """
+        return Node(None, None, state, 0, 0)
+
+"""-----------------------------------------------
+ " FUNCTIONS
+ "---------------------------------------------"""
+
+def graphSearch(problem):
+    """
+    Solves the specified problem by using a graph search algorithm.
+
+    :param problem: The problem to solve.
+
+    :return: A list containing the actions required to solve the specified
+             problem.
+    """
+
+    closed = []
+    fringe = []
+
+    """ Add the root node. It doesn't have a parent, nor an action or cost, and
+        the depth is zero. """
+    rootNode = Node.createRoot(problem.getStartState())
+    fringe.append(rootNode)
+
+    while fringe:
+        node = fringe.pop(0)
+
+        """ Check if we have reached the goal state. This is what the pseudo-
+            code tells us to do, as opposed to what Mr. Gabrielsson claims;
+            that we should NOT detect goal state nodes directly after popping
+            them from the fringe! How peculiar! ;-) Either way, it seems to
+            work fine. """
+        if problem.isGoalState(node.state): return gsSolution(node)
+
+        """ Make sure we don't expand this particular state more than once. """
+        if node.state not in closed:
+            closed.append(node.state)
+            fringe.extend(gsExpand(node, problem))
+
+    """ The fringe was exhausted; no solution could be found. """
+    return None
+
 
 def gsExpand(node, problem):
-    """ hej"""
+    """
+    Expands the specified node.
+
+    :param node:    The node to expand.
+    :param problem: The problem related to the node.
+
+    :return:        A list containing the successor state nodes for the
+                    specified node.
+    """
+
     successors = []
     for nextState, action, cost in problem.getSuccessors(node.state):
-        s = Node(node, action, nextState, node.depth+1, node.cost+cost)
-        successors.append(s)
+        childNode = node.createChild(action, nextState, cost)
+        successors.append(childNode)
 
     return successors
 
 def gsSolution(node):
-    """ Retrieves the solution as a list of actions to end up at the specified
-        node state """
+    """
+    Retrieves the solution as a list containing the actions needed to go from
+    the root node state to the specified node state.
+
+    :param node: The end (goal) node.
+
+    :return: A list containing the actions needed to reach the end node.
+    """
+
     solution = []
 
     while (node.parent is not None):
@@ -132,26 +239,8 @@ def gsSolution(node):
     solution.reverse()
     return solution
 
-def graphSearch(problem):
-    """Graph search algo impl blah blah blah"""
-    closed = []
-    fringe = [ Node(None, None, problem.getStartState(), 0, 0) ]
 
-    while (True):
-        if fringe == []:
-            return None
-
-        node = fringe.pop()
-
-        if problem.isGoalState(node.state):
-            return gsSolution(node)
-
-        if node.state not in closed:
-            closed.append(node.state)
-            fringe.extend(gsExpand(node, problem))
-
-
-""" -------------------------------------------------------------------------------- """
+""" ----------------------------------------------------------------------- """
 
 
 # Abbreviations
