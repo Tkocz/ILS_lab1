@@ -123,7 +123,7 @@ class Node:
         :param parent: The parent node.
         :param action: The action responsible for the node state.
         :param state:  The node state.
-        :param depth:  The depth of the node (in a graph).
+        :param depth:  The depth of the node (in its graph).
         :param cost:   The cost (g) to reach the node from the root.
 
         :return:       A node with the specified parameters set.
@@ -185,7 +185,7 @@ def graphSearch(problem):
 
     while fringe:
         # TODO: Let client specify fringe.
-        node = fringe.pop(0)
+        node = fringe.pop()
 
         # Check if we have reached the goal state.  This is what the pseudo-
         # code tells us to do, as opposed to what Mr. Gabrielsson claims;
