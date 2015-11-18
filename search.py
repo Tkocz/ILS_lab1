@@ -97,6 +97,58 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
+""" -------------------------------------------------------------------------------- """
+
+class Node:
+    """ Represents a search node. """
+    def __init__(self, parent, action, state, depth, cost):
+        self.action = action
+        self.cost   = cost
+        self.depth  = depth
+        self.parent = parent
+        self.state  = state
+
+
+def gsExpand(node, problem):
+    """ hej"""
+    successors = []
+    for nextState, action, cost in problem.getSuccessors(node.state):
+        s = Node(node, action, nextState, node.depth+1, node.cost+cost)
+        successors.append(s)
+
+    return successors
+
+def gsSolution(node):
+    """ does shit """
+    solution = []
+    while (node.parent is not None):
+        solution.append(node.action)
+        node = node.parent
+
+    solution.reverse()
+    return solution
+
+def graphSearch(problem, heuristic=nullHeuristic):
+    """Graph search algo impl blah blah blah"""
+    closed = []
+    fringe = [ Node(None, None, problem.getStartState(), 0, 0) ]
+
+    while (True):
+        if fringe == []:
+            return None
+
+        node = fringe.pop()
+
+        if problem.isGoalState(node.state):
+            return gsSolution(node)
+
+        if node.state not in closed:
+            closed.append(node.state)
+            fringe.extend(gsExpand(node, problem))
+
+
+""" -------------------------------------------------------------------------------- """
+
 
 # Abbreviations
 bfs = breadthFirstSearch
