@@ -163,7 +163,7 @@ class Node:
 #   FUNCTIONS
 # -------------------------------------------------
 
-def gs_search(problem):
+def graph_search(problem):
     """
     Solves the specified problem by using a graph search algorithm.
 
@@ -243,7 +243,8 @@ def gs_solution(node):
     solution.reverse()
     return solution
 
-graphSearch = gs_search
+# Maintain naming conventions, plz!
+graphSearch = graph_search
 
 # ----------------------------------------------------------------------------
 
