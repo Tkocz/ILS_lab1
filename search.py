@@ -108,6 +108,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 #   CLASSES
 # -------------------------------------------------
 
+
 class Node:
     """ Represents a search node. """
 
@@ -134,7 +135,7 @@ class Node:
         self.parent = parent
         self.state  = state
 
-    def createChild(self, action, state, cost):
+    def create_child(self, action, state, cost):
         """
         Creates a child node.
 
@@ -148,8 +149,8 @@ class Node:
         """
         return Node(self, action, state, self.depth+1, cost)
 
-    @staticmethod
-    def createRoot(state):
+    @classmethod
+    def create_root(cls, state):
         """
         Creates a root node.
 
@@ -162,6 +163,7 @@ class Node:
 # -------------------------------------------------
 #   FUNCTIONS
 # -------------------------------------------------
+
 
 def graphSearch(problem):
     """
@@ -178,8 +180,8 @@ def graphSearch(problem):
 
     # Add the root node.  It doesn't have a parent, nor an action or cost, and
     # the depth is zero. """
-    rootNode = Node.createRoot(problem.getStartState())
-    fringe.append(rootNode)
+    root_node = Node.create_root(problem.getStartState())
+    fringe.append(root_node)
 
     while fringe:
         # TODO: Let client specify fringe.
@@ -190,18 +192,18 @@ def graphSearch(problem):
         # that we should NOT detect goal state nodes directly after popping
         # them from the fringe!  How peculiar!  ;-) Either way, it seems to
         # work fine.
-        if problem.isGoalState(node.state): return gsSolution(node)
+        if problem.isGoalState(node.state): return gs_solution(node)
 
         # Make sure we don't expand this particular state more than once.
         if node.state not in closed:
             closed.append(node.state)
-            fringe.extend(gsExpand(node, problem))
+            fringe.extend(gs_expand(node, problem))
 
     # The fringe was exhausted; no solution could be found.
     return None
 
 
-def gsExpand(node, problem):
+def gs_expand(node, problem):
     """
     Expands the specified node.
 
@@ -215,12 +217,13 @@ def gsExpand(node, problem):
     successors = []
 
     for state, action, cost in problem.getSuccessors(node.state):
-        childNode = node.createChild(action, state, cost)
-        successors.append(childNode)
+        child_node = node.create_child(action, state, cost)
+        successors.append(child_node)
 
     return successors
 
-def gsSolution(node):
+
+def gs_solution(node):
     """
     Retrieves the solution as a list containing the actions needed to go from
     the root node state to the specified node state.
