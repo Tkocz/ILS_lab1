@@ -104,6 +104,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 #                                      ▲ ▲
 # ----------------------------------------------------------------------------
 
+graphSearch = gs_search
+
 # -------------------------------------------------
 #   CLASSES
 # -------------------------------------------------
@@ -163,7 +165,7 @@ class Node:
 #   FUNCTIONS
 # -------------------------------------------------
 
-def graphSearch(problem):
+def gs_search(problem):
     """
     Solves the specified problem by using a graph search algorithm.
 
