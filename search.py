@@ -222,11 +222,14 @@ def gs_expand(node, problem):
 def gs_solution(node):
     """
     Retrieves the solution as a list containing the actions needed to go from
-    the root node state to the specified node state.
+    the root node state to the specified node state through their lineage path.
+    This might not be the only solution, although it is guaranteed to be one of
+    the possible solutions.
 
     :param node: The end (goal) node.
 
-    :return: A list containing the actions needed to reach the end node.
+    :return: A list containing the actions needed to reach the end node. This is
+             guaranteed to be a solution, but might not be the only solution.
     """
 
     solution = []
