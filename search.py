@@ -60,7 +60,7 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-def depthFirstSearch(problem):
+def depthFirstSearch(problem): # ▲ was here
     """
     Search the deepest nodes in the search tree first.
 
@@ -75,13 +75,15 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+    """▲"""
     fringe = util.Stack()
     solution = graphSearch(problem, fringe)
     return solution
 
-def breadthFirstSearch(problem):
+def breadthFirstSearch(problem): # ▲ was here
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    """▲"""
     fringe = util.Queue()
     solution = graphSearch(problem, fringe)
     return solution
@@ -104,7 +106,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     util.raiseNotDefined()
 
 # ----------------------------------------------------------------------------
-# Code below by: PYTH0N TRIF0RCE TEAM   ▲
+# Code below by: PYTH0N TRIF0RCE TEAM    ▲
 #                                      ▲ ▲
 # ----------------------------------------------------------------------------
 
