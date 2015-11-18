@@ -125,7 +125,7 @@ class Node:
         :param depth:  The depth of the node (in its graph).
         :param cost:   The cost (g) to reach the node from the root.
 
-        :return:       A node with the specified parameters set.
+        :return: A node with the specified parameters set.
         """
 
         self.action = action
@@ -207,8 +207,7 @@ def gs_expand(node, problem):
     :param node:    The node to expand.
     :param problem: The problem related to the node.
 
-    :return:        A list containing the successor state nodes for the
-                    specified node.
+    :return: A list containing the successor state nodes for the specified node.
     """
 
     successors = []
