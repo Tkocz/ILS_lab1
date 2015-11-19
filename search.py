@@ -182,7 +182,7 @@ def graph_search(problem, fringe):
     closed = []
 
     # Add the root node.  It doesn't have a parent, nor an action or cost, and
-    # the depth is zero. """
+    # the depth is zero.
     root_node = Node.create_root(problem.getStartState())
     fringe.push(root_node)
 
