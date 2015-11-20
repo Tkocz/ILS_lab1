@@ -77,7 +77,7 @@ def depthFirstSearch(problem): # ▲ was here
     "*** YOUR CODE HERE ***"
     """▲"""
     fringe = util.Stack()
-    solution = graphSearch(problem, fringe)
+    solution = graphSearch(problem, fringe, util.Stack.push)
     return solution
 
 def breadthFirstSearch(problem): # ▲ was here
@@ -85,13 +85,16 @@ def breadthFirstSearch(problem): # ▲ was here
     "*** YOUR CODE HERE ***"
     """▲"""
     fringe = util.Queue()
-    solution = graphSearch(problem, fringe)
+    solution = graphSearch(problem, fringe, util.Queue.push)
     return solution
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    """▲"""
+    fringe = util.PriorityQueue()
+    solution = graphSearch(problem, fringe, lambda fringe, node: fringe.push(node, node.cost))
+    return solution
 
 def nullHeuristic(state, problem=None):
     """
@@ -103,10 +106,12 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.PriorityQueue()
+    solution = graphSearch(problem, fringe, lambda fringe, node: fringe.push(node, node.cost + heuristic(node.state, problem)))
+    return solution
 
 # ----------------------------------------------------------------------------
-# Code below by: PYTH0N TRIF0RCE TEAM    ▲
+# Code below by: PYTH0N TRIF0RCE TEAM   ▲
 #                                      ▲ ▲
 # ----------------------------------------------------------------------------
 
@@ -152,7 +157,7 @@ class Node:
 
         :return: A child node.
         """
-        return Node(self, action, state, self.depth+1, cost)
+        return Node(self, action, state, self.depth+1, self.cost+cost)
 
     @classmethod
     def create_root(cls, state):
@@ -169,7 +174,7 @@ class Node:
 #   FUNCTIONS
 # -------------------------------------------------
 
-def graph_search(problem, fringe):
+def graph_search(problem, fringe, push_fn):
     """
     Solves the specified problem by using a graph search algorithm.
 
@@ -184,7 +189,7 @@ def graph_search(problem, fringe):
     # Add the root node.  It doesn't have a parent, nor an action or cost, and
     # the depth is zero.
     root_node = Node.create_root(problem.getStartState())
-    fringe.push(root_node)
+    push_fn(fringe, root_node)
 
     while not fringe.isEmpty():
         node = fringe.pop()
@@ -199,16 +204,13 @@ def graph_search(problem, fringe):
         # Make sure we don't expand this particular state more than once.
         if node.state not in closed:
             closed.append(node.state)
-            tempList = []
-            tempList.extend(gs_expand(node, problem))
-            for member in tempList:
-                fringe.push(member)
+            gs_expand(node, problem, fringe, push_fn)
 
     # The fringe was exhausted; no solution could be found.
     return None
 
 
-def gs_expand(node, problem):
+def gs_expand(node, problem, fringe, push_fn):
     """
     Expands the specified node.
 
@@ -218,13 +220,9 @@ def gs_expand(node, problem):
     :return: A list containing the successor state nodes for the specified node.
     """
 
-    successors = []
-
     for state, action, cost in problem.getSuccessors(node.state):
         child_node = node.create_child(action, state, cost)
-        successors.append(child_node)
-
-    return successors
+        push_fn(fringe, child_node)
 
 
 def gs_solution(node):
