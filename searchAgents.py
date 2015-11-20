@@ -285,7 +285,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         # This returns the starting state, with an empty set representing the
-        # visited corners.
+        # visited corners (ie. none).
         return (self.startingPosition, {})
 
     def isGoalState(self, state):
