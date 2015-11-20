@@ -77,24 +77,27 @@ def depthFirstSearch(problem): # ▲ was here
     "*** YOUR CODE HERE ***"
     """▲"""
     fringe = util.Stack()
-    solution = graphSearch(problem, fringe, util.Stack.push)
-    return solution
+
+    return graphSearch(problem, fringe, util.Stack.push)
 
 def breadthFirstSearch(problem): # ▲ was here
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     """▲"""
     fringe = util.Queue()
-    solution = graphSearch(problem, fringe, util.Queue.push)
-    return solution
+
+    return graphSearch(problem, fringe, util.Queue.push)
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     """▲"""
-    fringe = util.PriorityQueue()
-    solution = graphSearch(problem, fringe, lambda fringe, node: fringe.push(node, node.cost))
-    return solution
+    def g(x): return x.cost
+
+    fringe  = util.PriorityQueue()
+    push_fn = lambda fringe, node: fringe.push(node, g(node))
+
+    return graphSearch(problem, fringe, push_fn)
 
 def nullHeuristic(state, problem=None):
     """
