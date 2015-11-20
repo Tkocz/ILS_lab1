@@ -13,7 +13,7 @@
     <module name="trunk" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pacman.py" />
-    <option name="PARAMETERS" value="-l smallMaze -p SearchAgent -a fn=dfs" />
+    <option name="PARAMETERS" value="-l mediumMaze -p SearchAgent -a fn=dfs" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <method />
   </configuration>
