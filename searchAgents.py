@@ -368,21 +368,24 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
     #return 0 # Default to trivial solution
-    currentLowest = 99999
-    shortestPath = 99999
+    currentLowest = 9999999
+    shortestPath = 9999999
     problemCorners = set(problem.corners)
-    for corner in problem.corners:
+
+    for corner in problemCorners:
         if corner not in state[1]:
             temp = manhattanHeuristicCorners(state[0], corner)
             if temp < currentLowest:
                 currentLowest = temp
                 lowestCorner = corner
+    if currentLowest == 9999999: return 0
+    problemCorners.discard(lowestCorner)
     for corners in itertools.permutations(problemCorners):
-        s = currentLowest + manhattanShortestPath(corners)
+        s = currentLowest + manhattanShortestPath((lowestCorner,) + corners)
         if s < shortestPath:
             shortestPath = s
 
-    return 0
+    return shortestPath
 
 
 
@@ -394,7 +397,7 @@ def manhattanHeuristicCorners(position, corner, info={}):
 
 def manhattanShortestPath(unvisitedCorners):
     s = 0
-    for i in range(len(unvisitedCorners) - 2):
+    for i in range(len(unvisitedCorners) - 1):
         s += manhattanHeuristicCorners(unvisitedCorners[i], unvisitedCorners[i + 1])
     return s
 
