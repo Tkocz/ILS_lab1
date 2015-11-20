@@ -284,17 +284,20 @@ class CornersProblem(search.SearchProblem):
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
-        "*** YOUR CODE HERE ***"
-        return (self.startingPosition,set())
+        # This returns the starting state, with an empty set representing the
+        # visited corners.
+        return (self.startingPosition, {})
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        "*** YOUR CODE HERE ***"
-        lol = state[1] == self.corners
-        if lol: print state
-        return lol
+
+        # Since self.corners is a set, the comparison is unordered. This means
+        # that, as long as the state contains all four corners, their order has
+        # no relevance. We have reached our goal state if we have visited all
+        # four corners, no matter the order in which we visited them.
+        return state[1] == self.corners
 
     def getSuccessors(self, state):
         """
@@ -309,24 +312,26 @@ class CornersProblem(search.SearchProblem):
 
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
-            xy,c = state
-            x,y = xy[0],xy[1]
-            dx, dy = Actions.directionToVector(action)
-            nextx, nexty = int(x + dx), int(y + dy)
-            if not self.walls[nextx][nexty]:
-                nextState = ((nextx, nexty), c)
-                cost      = 1
-                if (nextx, nexty) in self.corners:
-                    nextState[1].add((nextx, nexty))
-                successors.append((nextState, action, cost))
+            pos, visited_corners = state
 
-            "*** YOUR CODE HERE ***"
+            # It is VITAL that we clone this set to prevent state corruption of
+            # other nodes!
+            visited_corners = set(visited_corners)
+
+            x, y            = pos[0], pos[1]
+            dx, dy          = Actions.directionToVector(action)
+            next_x, next_y  = int(x + dx), int(y + dy)
+
+            if not self.walls[next_x][next_y]:
+                next_state = ((next_x, next_y), visited_corners)
+                cost       = 1
+
+                # If the new state's position is one of the corners, make sure
+                # we note this in the state.
+                if (next_x, next_y) in self.corners:
+                    visited_corners.add((next_x, next_y))
+
+                successors.append((next_state, action, cost))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
