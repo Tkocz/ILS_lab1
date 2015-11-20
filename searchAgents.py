@@ -266,7 +266,11 @@ class CornersProblem(search.SearchProblem):
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
-        self.corners = ((1,1), (1,top), (right, 1), (right, top))
+        # NOTE: We changed the the type of the self.corners attribute to a set
+        #       to make unordered comparison easier. This is important since we
+        #       want to make sure Pacman can visit the corners in any order he
+        #       finds feasible.
+        self.corners = {(1,1), (1,top), (right, 1), (right, top)}
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print 'Warning: no food in corner ' + str(corner)
@@ -281,14 +285,14 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.startingPosition + ({},)
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return state[1] == self.corners
 
     def getSuccessors(self, state):
         """
@@ -309,6 +313,14 @@ class CornersProblem(search.SearchProblem):
             #   dx, dy = Actions.directionToVector(action)
             #   nextx, nexty = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextx][nexty]
+            x,y,c = state
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            if not self.walls[nextx][nexty]:
+                nextState = (nextx, nexty, c)
+                if (nextx, nexty) in self.corners:
+                    nextState[2].add((nextx, nexty))
+                successors.append(nextState)
 
             "*** YOUR CODE HERE ***"
 
