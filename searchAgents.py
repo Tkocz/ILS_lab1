@@ -446,6 +446,7 @@ def corners_heuristic(state, problem):
 
     if non_admissible_mode:
         shortest_path_length **= 2
+
     return shortest_path_length
 
 # Maintain naming conventions, plz!
