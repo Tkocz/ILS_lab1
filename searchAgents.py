@@ -427,7 +427,7 @@ def corners_heuristic(state, problem):
 
     # Enable this for some raw p0w4h! Less than 200 expanded nodes on the
     # bigCorners layout! l0l!
-    non_admissible_mode = True
+    non_admissible_mode = False
 
     position          = state[0]
     unvisited_corners = state[1]
