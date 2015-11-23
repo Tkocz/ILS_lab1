@@ -106,10 +106,13 @@ class ReflexAgent(Agent):
 
         score = successorGameState.getScore()
 
-        if ghost_distance < 2:
-            score -= 100
+        if ghost_distance == sys.maxint: ghost_distance = 0
+        if food_distance  == sys.maxint: food_distance  = 0
 
-        score += 100 - food_distance*10
+        if ghost_distance < 6:
+            score -= 100.0 / (ghost_distance+1)
+
+        score += 1.0 / (food_distance+1)
 
         return score
 
