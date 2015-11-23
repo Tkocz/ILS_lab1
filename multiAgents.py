@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 from util import manhattanDistance
 from game import Directions
 import random, util
@@ -54,13 +56,62 @@ class ReflexAgent(Agent):
         """
         # Useful information you can extract from a GameState (pacman.py)
         successorGameState = currentGameState.generatePacmanSuccessor(action)
-        newPos = successorGameState.getPacmanPosition()
-        newFood = successorGameState.getFood()
-        newGhostStates = successorGameState.getGhostStates()
-        newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+        newPos             = successorGameState.getPacmanPosition()
+        newFood            = successorGameState.getFood()
+        newGhostStates     = successorGameState.getGhostStates()
+        newScaredTimes     = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        """
+        här är skitkoden som funkar dåligt.
+
+        import sys
+        from searchAgents import manhattan_distance
+
+        score = successorGameState.getScore()
+
+        # gd = närmaste spöke
+        gd = sys.maxint
+        for ghost_state in newGhostStates:
+            gd = min(gd, manhattan_distance(ghost_state.getPosition(), newPos))
+
+        # nf = närmaste mat
+        nf = sys.maxint
+        for x in range(newFood.width):
+            for y in range(newFood.height):
+                if newFood[x][y]: nf = min(nf, manhattan_distance(newPos, (x,y)))
+
+        if gd == sys.maxint: gd = 0
+        if nf == sys.maxint: nf = 0
+
+        score += 10.0/(nf+1)**0.25
+        score += 10*gd**0.5*0.07
+        """
+
+        from searchAgents import manhattan_distance
+
+        import sys
+
+        ghost_distance = sys.maxint
+        for ghost_state in newGhostStates:
+            dist = manhattan_distance(ghost_state.getPosition(), newPos)
+            ghost_distance = min(ghost_distance, dist)
+
+        food_distance = sys.maxint
+        for x in range(newFood.width):
+            for y in range(newFood.height):
+                if newFood[x][y]:
+                    dist = manhattan_distance(newPos, (x,y))
+                    food_distance = min(food_distance, dist)
+
+        score = successorGameState.getScore()
+
+        if ghost_distance < 2:
+            score -= 100
+
+        score += 100 - food_distance*10
+
+        return score
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -97,6 +148,29 @@ class MinimaxAgent(MultiAgentSearchAgent):
       Your minimax agent
     """
 
+    def assvalue(self, state, n):
+        if n >= self.depth:
+            return state.getScore()
+
+        if self.index == 0:
+            return self.max_value(state, n+1)
+
+        return self.min_value(state, n+1)
+
+    def max_value(self, state, n):
+        v = -9999999
+        for action in state.getLegalActions(self.index):
+            s = state.generateSuccessor(self.index, action)
+            v = max(v, self.assvalue(state, n+1))
+        return v
+
+    def min_value(self, state, n):
+        v = 9999999
+        for action in state.getLegalActions(self.index):
+            s = state.generateSuccessor(self.index, action)
+            v = min(v, self.assvalue(state, n+1))
+        return v
+
     def getAction(self, gameState):
         """
           Returns the minimax action from the current gameState using self.depth
@@ -114,8 +188,29 @@ class MinimaxAgent(MultiAgentSearchAgent):
           gameState.getNumAgents():
             Returns the total number of agents in the game
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        print self.index
+        if self.index == 0:
+            qk = -999999
+            best_action = None
+            for action in gameState.getLegalActions(self.index):
+                av = self.assvalue(gameState, 0)
+                print av
+                print action
+                if av > qk:
+                    qk = av
+                    best_action = action
+            print best_action
+            return best_action
+        else:
+            qk = 999999
+            best_action = None
+            for action in gameState.getLegalActions(self.index):
+                av = self.assvalue(gameState, 0)
+                if av < qk:
+                    qk = av
+                    best_action = action
+            return best_action
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
