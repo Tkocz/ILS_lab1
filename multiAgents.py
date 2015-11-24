@@ -382,7 +382,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
     def state_utility(self, state, index, depth, max_option, min_option):
         """
-        Finds the state utility value for the specified state using the Minimax
+        Finds the state utility value for the specified state using the Expectimax
         algorithm.
 
         :param state: The game state to search from.
@@ -390,7 +390,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         :param depth: The depth value - should always be set to zero when called
                       externally.
 
-        :return: The maximum utility value for the specified state.
+        :return: The expected maximum utility value for the specified state.
         """
 
         if state.isWin() or state.isLose() or depth == self.depth:
@@ -406,7 +406,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
     def max_state_utility(self, state, index, depth, max_option, min_option):
         """
         Finds the maximum state utility for the specified state using the
-        Minimax algorithm.
+        Expectimax algorithm.
 
         :param state: The game state to search from.
         :param index: The agent index.
@@ -428,14 +428,14 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
     def exp_state_utility(self, state, index, depth, max_option, min_option):
         """
-        Finds the minimum state utility for the specified state using the
-        Minimax algorithm.
+        Finds the expected state utility for the specified state using the
+        Expectimax algorithm.
 
         :param state: The game state to search from.
         :param index: The agent index.
         :param depth: The depth value.
 
-        :return: The minimum state utility for the specified state.
+        :return: The utility-value for the specified state.
         """
 
         value = 0
@@ -449,7 +449,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
     def getAction(self, gameState):
         """
-          Returns the minimax action using self.depth and self.evaluationFunction
+          Returns the expectimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
         best_action = None
@@ -457,17 +457,8 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         max_option = -sys.maxint
         min_option = sys.maxint
 
-        # NOTE: For whatever reason, the state utility value calculated by our
-        #       Minimax evaluation function for the initial state is -491.0
-        #       using the following command line:
-        #
-        #   `pacman.py -p MinimaxAgent -l minimaxClassic -a depth=4`
-        #
-        #       The assignment spec. tells us to expect the value -492.0. I have
-        #       no idea why this happens. Investigate, plz!
-
         # Try all actions from the current game state and select the best one
-        # according to minimax. This is actually a job for the max_state_utility
+        # according to expectimax. This is actually a job for the max_state_utility
         # function, but having this code here lets us simplify the others a bit.
         for action in gameState.getLegalActions(0):
             next_state    = gameState.generateSuccessor(0, action)
