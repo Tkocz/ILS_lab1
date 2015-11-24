@@ -365,6 +365,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         # Try all actions from the current game state and select the best one
         # according to minimax. This is actually a job for the max_state_utility
         # function, but having this code here lets us simplify the others a bit.
+
         for action in gameState.getLegalActions(0):
             next_state    = gameState.generateSuccessor(0, action)
             utility_value = self.state_utility(next_state, 0, 0, max_option, min_option)
@@ -484,8 +485,49 @@ def betterEvaluationFunction(currentGameState):
 
       DESCRIPTION: <write something here so we know what you did>
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from searchAgents import manhattan_distance
+
+    import sys
+
+    newPos             = currentGameState.getPacmanPosition()
+    newFood            = currentGameState.getFood()
+    newGhostStates     = currentGameState.getGhostStates()
+    newScaredTimes     = [ghostState.scaredTimer for ghostState in newGhostStates]
+
+    # Find the nearest ghost.
+    ghost_distance = sys.maxint
+    for ghost_state in newGhostStates:
+        dist = manhattan_distance(ghost_state.getPosition(), newPos)
+        ghost_distance = min(ghost_distance, dist)
+
+    # Find the nearest food.
+    food_distance = sys.maxint
+    for x in range(newFood.width):
+        for y in range(newFood.height):
+            if newFood[x][y]:
+                dist = manhattan_distance(newPos, (x,y))
+                food_distance = min(food_distance, dist)
+
+    # Make sure we can handle situations without any ghosts or food.
+    if ghost_distance == sys.maxint: ghost_distance = 0
+    if food_distance  == sys.maxint: food_distance  = 0
+
+    # Start with the 'default' state score.
+    score = currentGameState.getScore()
+
+    # The ghost is nearby - penalize Pacman by slapping him across the face
+    # with negative points. Since our evaluation need not be continuous (ie.
+    # it's ok to have abrupt changes missing derivatives), using an if-
+    # statement here is a cheap way to make this evaluation function pretty
+    # much unbeatable. One could also imagine some kind of polynomial
+    # function mimicking the if-statement without breaking continuity.
+    if ghost_distance < 6:
+        score -= 100.0 / (ghost_distance+1)
+
+    # Help Pacman detect nearby food slightly.
+    score += 1.0 / (food_distance+1)
+
+    return score
 
 # Abbreviation
 better = betterEvaluationFunction
