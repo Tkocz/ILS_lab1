@@ -156,22 +156,23 @@ class MinimaxAgent(MultiAgentSearchAgent):
             return state.getScore()
 
         if self.index == 0:
-            return self.max_value(state, n+1)
+            return self.max_value(state, n)
 
-        return self.min_value(state, n+1)
+        return self.min_value(state, n)
 
     def max_value(self, state, n):
+        n = n+1
         v = -9999999
         for action in state.getLegalActions(self.index):
             s = state.generateSuccessor(self.index, action)
-            v = max(v, self.assvalue(state, n+1))
+            v = max(v, self.assvalue(state, n))
         return v
 
     def min_value(self, state, n):
         v = 9999999
         for action in state.getLegalActions(self.index):
             s = state.generateSuccessor(self.index, action)
-            v = min(v, self.assvalue(state, n+1))
+            v = min(v, self.assvalue(state, n))
         return v
 
     def getAction(self, gameState):
