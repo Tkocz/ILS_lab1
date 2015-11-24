@@ -5,7 +5,7 @@
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
-    <option name="SDK_HOME" value="/usr/bin/python" />
+    <option name="SDK_HOME" value="C:\Python27\python.exe" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -13,7 +13,7 @@
     <module name="trunk" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pacman.py" />
-    <option name="PARAMETERS" value="-p AlphaBetaAgent -l minimaxClassic -a depth=6" />
+    <option name="PARAMETERS" value="-p AlphaBetaAgent -l minimaxClassic -a depth=4" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <method />
   </configuration>
