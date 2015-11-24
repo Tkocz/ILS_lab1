@@ -6,6 +6,8 @@ import random, util
 
 from game import Agent
 
+import sys
+
 class ReflexAgent(Agent):
     """
       A reflex agent chooses an action at each choice point by examining
@@ -61,11 +63,9 @@ class ReflexAgent(Agent):
         newGhostStates     = successorGameState.getGhostStates()
         newScaredTimes     = [ghostState.scaredTimer for ghostState in newGhostStates]
 
-        "*** YOUR CODE HERE ***"
         """
         här är skitkoden som funkar dåligt.
 
-        import sys
         from searchAgents import manhattan_distance
 
         score = successorGameState.getScore()
@@ -92,11 +92,13 @@ class ReflexAgent(Agent):
 
         import sys
 
+        # Find the nearest ghost.
         ghost_distance = sys.maxint
         for ghost_state in newGhostStates:
             dist = manhattan_distance(ghost_state.getPosition(), newPos)
             ghost_distance = min(ghost_distance, dist)
 
+        # Find the nearest food.
         food_distance = sys.maxint
         for x in range(newFood.width):
             for y in range(newFood.height):
@@ -104,14 +106,23 @@ class ReflexAgent(Agent):
                     dist = manhattan_distance(newPos, (x,y))
                     food_distance = min(food_distance, dist)
 
-        score = successorGameState.getScore()
-
+        # Make sure we can handle situations without any ghosts or food.
         if ghost_distance == sys.maxint: ghost_distance = 0
         if food_distance  == sys.maxint: food_distance  = 0
 
+        # Start with the 'default' state score.
+        score = successorGameState.getScore()
+
+        # The ghost is nearby - penalize Pacman by slapping him across the face
+        # with negative points. Since our evaluation need not be continuous (ie.
+        # it's ok to have abrupt changes missing derivatives), using an if-
+        # statement here is a cheap way to make this evaluation function pretty
+        # much unbeatable. One could also imagine some kind of polynomial
+        # function mimicking the if-statement without breaking continuity.
         if ghost_distance < 6:
             score -= 100.0 / (ghost_distance+1)
 
+        # Help Pacman detect nearby food slightly.
         score += 1.0 / (food_distance+1)
 
         return score
@@ -151,29 +162,70 @@ class MinimaxAgent(MultiAgentSearchAgent):
       Your minimax agent
     """
 
-    def assvalue(self, state, n):
-        if n >= self.depth:
-            return state.getScore()
+    def state_utility(self, state, index, depth):
+        """
+        Finds the state utility value for the specified state using the Minimax
+        algorithm.
 
-        if self.index == 0:
-            return self.max_value(state, n)
+        :param state: The game state to search from.
+        :param index: The agent index.
+        :param depth: The depth value - should always be set to zero when called
+                      externally.
 
-        return self.min_value(state, n)
+        :return: The maximum utility value for the specified state.
+        """
 
-    def max_value(self, state, n):
-        n = n+1
-        v = -9999999
-        for action in state.getLegalActions(self.index):
-            s = state.generateSuccessor(self.index, action)
-            v = max(v, self.assvalue(state, n))
-        return v
+        if state.isWin() or state.isLose() or depth == self.depth:
+            return self.evaluationFunction(state)
 
-    def min_value(self, state, n):
-        v = 9999999
-        for action in state.getLegalActions(self.index):
-            s = state.generateSuccessor(self.index, action)
-            v = min(v, self.assvalue(state, n))
-        return v
+        index = (index+1) % state.getNumAgents()
+
+        if index == 0:
+            return self.max_state_utility(state, index, depth+1)
+        else:
+            return self.min_state_utility(state, index, depth)
+
+    def max_state_utility(self, state, index, depth):
+        """
+        Finds the maximum state utility for the specified state using the
+        Minimax algorithm.
+
+        :param state: The game state to search from.
+        :param index: The agent index.
+        :param depth: The depth value.
+
+        :return: The maximum state utility for the specified state.
+        """
+
+        max_value = -sys.maxint
+
+        for action in state.getLegalActions(index):
+            successor_state = state.generateSuccessor(index, action)
+            value           = self.state_utility(successor_state, index, depth)
+            max_value       = max(max_value, value)
+
+        return max_value
+
+    def min_state_utility(self, state, index, depth):
+        """
+        Finds the minimum state utility for the specified state using the
+        Minimax algorithm.
+
+        :param state: The game state to search from.
+        :param index: The agent index.
+        :param depth: The depth value.
+
+        :return: The minimum state utility for the specified state.
+        """
+
+        min_value = sys.maxint
+
+        for action in state.getLegalActions(index):
+            successor_state = state.generateSuccessor(index, action)
+            value           = self.state_utility(successor_state, index, depth)
+            min_value       = min(min_value, value)
+
+        return min_value
 
     def getAction(self, gameState):
         """
@@ -193,28 +245,30 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
 
-        print self.index
-        if self.index == 0:
-            qk = -999999
-            best_action = None
-            for action in gameState.getLegalActions(self.index):
-                av = self.assvalue(gameState, 0)
-                print av
-                print action
-                if av > qk:
-                    qk = av
-                    best_action = action
-            print best_action
-            return best_action
-        else:
-            qk = 999999
-            best_action = None
-            for action in gameState.getLegalActions(self.index):
-                av = self.assvalue(gameState, 0)
-                if av < qk:
-                    qk = av
-                    best_action = action
-            return best_action
+        best_action = None
+        max_utility = -sys.maxint
+
+        # NOTE: For whatever reason, the state utility value calculated by our
+        #       Minimax evaluation function for the initial state is -491.0
+        #       using the following command line:
+        #
+        #   `pacman.py -p MinimaxAgent -l minimaxClassic -a depth=4`
+        #
+        #       The assignment spec. tells us to expect the value -492.0. I have
+        #       no idea why this happens. Investigate, plz!
+
+        # Try all actions from the current game state and select the best one
+        # according to minimax. This is actually a job for the max_state_utility
+        # function, but having this code here lets us simplify the others a bit.
+        for action in gameState.getLegalActions(0):
+            next_state    = gameState.generateSuccessor(0, action)
+            utility_value = self.state_utility(next_state, 0, 0)
+
+            if utility_value > max_utility:
+                max_utility = utility_value
+                best_action = action
+
+        return best_action
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
@@ -255,4 +309,3 @@ def betterEvaluationFunction(currentGameState):
 
 # Abbreviation
 better = betterEvaluationFunction
-
