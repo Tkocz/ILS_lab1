@@ -274,13 +274,106 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     """
       Your minimax agent with alpha-beta pruning
     """
+    def state_utility(self, state, index, depth, max_option, min_option):
+        """
+        Finds the state utility value for the specified state using the Minimax
+        algorithm.
+
+        :param state: The game state to search from.
+        :param index: The agent index.
+        :param depth: The depth value - should always be set to zero when called
+                      externally.
+
+        :return: The maximum utility value for the specified state.
+        """
+
+        if state.isWin() or state.isLose() or depth == self.depth:
+            return self.evaluationFunction(state)
+
+        index = (index+1) % state.getNumAgents()
+
+        if index == 0:
+            return self.max_state_utility(state, index, depth+1, max_option, min_option)
+        else:
+            return self.min_state_utility(state, index, depth, max_option, min_option)
+
+    def max_state_utility(self, state, index, depth, max_option, min_option):
+        """
+        Finds the maximum state utility for the specified state using the
+        Minimax algorithm.
+
+        :param state: The game state to search from.
+        :param index: The agent index.
+        :param depth: The depth value.
+
+        :return: The maximum state utility for the specified state.
+        """
+
+        max_value = -sys.maxint
+
+        for action in state.getLegalActions(index):
+            successor_state = state.generateSuccessor(index, action)
+            value           = self.state_utility(successor_state, index, depth, max_option, min_option)
+            max_value       = max(max_value, value)
+            if max_value > min_option: return max_value
+            max_option      = max(max_option, max_value)
+
+        return max_value
+
+    def min_state_utility(self, state, index, depth, max_option, min_option):
+        """
+        Finds the minimum state utility for the specified state using the
+        Minimax algorithm.
+
+        :param state: The game state to search from.
+        :param index: The agent index.
+        :param depth: The depth value.
+
+        :return: The minimum state utility for the specified state.
+        """
+
+        min_value = sys.maxint
+
+        for action in state.getLegalActions(index):
+            successor_state = state.generateSuccessor(index, action)
+            value           = self.state_utility(successor_state, index, depth, max_option, min_option)
+            min_value       = min(min_value, value)
+            if min_value < max_option: return min_value
+            min_option      = min(min_option, min_value)
+
+        return min_value
 
     def getAction(self, gameState):
         """
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        best_action = None
+        max_utility = -sys.maxint
+        max_option = -sys.maxint
+        min_option = sys.maxint
+
+        # NOTE: For whatever reason, the state utility value calculated by our
+        #       Minimax evaluation function for the initial state is -491.0
+        #       using the following command line:
+        #
+        #   `pacman.py -p MinimaxAgent -l minimaxClassic -a depth=4`
+        #
+        #       The assignment spec. tells us to expect the value -492.0. I have
+        #       no idea why this happens. Investigate, plz!
+
+        # Try all actions from the current game state and select the best one
+        # according to minimax. This is actually a job for the max_state_utility
+        # function, but having this code here lets us simplify the others a bit.
+        for action in gameState.getLegalActions(0):
+            next_state    = gameState.generateSuccessor(0, action)
+            utility_value = self.state_utility(next_state, 0, 0, max_option, min_option)
+
+            if utility_value > max_utility:
+                max_utility = utility_value
+                best_action = action
+
+        return best_action
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
