@@ -545,8 +545,28 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+
+    def optimal_single_insert(food_list, new_food):
+        best_path = None
+        min_path_length = sys.maxint
+        for i in range(1, len(food_list)+1):
+            l = food_list[:]
+            l.insert(i, new_food)
+            path_length = manhattan_path_length(l)
+            if path_length < min_path_length:
+                min_path_length = path_length
+                best_path = l
+
+        return best_path
+
+    food_list = foodGrid.asList()
+    food_list = sorted(food_list, key=lambda food: manhattan_distance(position, food))
+
+    waypoints = [position]
+    for food in food_list:
+        waypoints = optimal_single_insert(waypoints, food)
+
+    return manhattan_path_length(waypoints)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
