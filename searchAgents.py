@@ -546,27 +546,105 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
 
-    def optimal_single_insert(food_list, new_food):
-        best_path = None
-        min_path_length = sys.maxint
-        for i in range(1, len(food_list)+1):
-            l = food_list[:]
-            l.insert(i, new_food)
-            path_length = manhattan_path_length(l)
-            if path_length < min_path_length:
-                min_path_length = path_length
-                best_path = l
+    def calc_total_path_cast(problem, p):
+        d, n = 0, len(p)-1
+        for i in range(n):
+            d += calc_path_cost(problem, p[i], p[i+1])
 
-        return best_path
+        return d
 
-    food_list = foodGrid.asList()
-    food_list = sorted(food_list, key=lambda food: manhattan_distance(position, food))
+    def calc_path_cost(problem, a, b):
+        cost = manhattan_distance(a, b)
 
-    waypoints = [position]
-    for food in food_list:
-        waypoints = optimal_single_insert(waypoints, food)
+        wall_cost = 3
 
-    return manhattan_path_length(waypoints)
+        cost0, cost1 = 0, 0
+        wall0, wall1 = False, False
+        for x in range(min(a[0], b[0]), max(a[0], b[0])+1):
+            if problem.walls[x][a[1]]:
+                cost0 += 1
+                if not wall0:
+                    cost0 += 1
+                    wall0 = True
+            else:
+                wall0 = False
+            if problem.walls[x][b[1]]:
+                cost1 += 1
+                if not wall1:
+                    cost1 += 1
+                    wall1 = True
+            else:
+                wall1 = False
+
+        wall0, wall1 = False, False
+        for y in range(min(a[1], b[1]), max(a[1], b[1])+1):
+            if problem.walls[a[0]][y]:
+                cost0 += 1
+                if not wall0:
+                    cost0 += 1
+                    wall0 = True
+            else:
+                wall0 = False
+            if problem.walls[b[0]][y]:
+                cost1 += 1
+                if not wall1:
+                    cost1 += 1
+                    wall1 = True
+            else:
+                wall1 = False
+
+        return cost + min(cost0, cost1)
+
+    def calc_shortest_path(problem, pos, food):
+        if len(food) == 0:
+            return (0, [])
+
+        if len(food) == 1:
+            return (calc_path_cost(problem, pos, food[0]), [food[0]])
+
+        food     = sorted(food, key=lambda f: calc_path_cost(problem, pos, f))
+        dist     = calc_path_cost(problem, pos, food[0])
+        equidist = []
+
+        for i in range(len(food)):
+            x = food[i]
+            if calc_path_cost(problem, pos, x) == dist:
+                equidist.append(x)
+            else:
+                break # We can break here since we know the list is sorted!
+
+        food = food[len(equidist):]
+
+        if len(equidist) == 1:
+            path = calc_shortest_path(problem, equidist[0], food)
+            return (path[0] + dist, [equidist[0]] + path[1])
+
+        best_path = (sys.maxint, [])
+        for q in permutations(equidist):
+            temp = list(q) + food
+            path = calc_shortest_path(problem, temp[0], temp[1:])
+            if path[0] < best_path[0]:
+                best_path = (path[0], [temp[0]] + path[1])
+
+        return (best_path[0] + dist, best_path[1])
+
+    food_list      = foodGrid.asList()
+    heuristic_path = None
+
+    if not 'heuristic_path' in problem.heuristicInfo:
+        heuristic_path = calc_shortest_path(problem, position, food_list)
+        problem.heuristicInfo['heuristic_path'] = heuristic_path
+    else:
+        heuristic_path = problem.heuristicInfo['heuristic_path']
+
+    if len(food_list) != len(heuristic_path[1]):
+        heuristic_path = calc_shortest_path(problem, position, food_list)
+        problem.heuristicInfo['heuristic_path'] = heuristic_path
+
+    ass = calc_total_path_cast(problem, [position]+heuristic_path[1])
+    if ass > 60:
+        print "asfasfds    " + str(ass)
+    return ass
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
