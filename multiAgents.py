@@ -176,13 +176,15 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         index = (index+1) % state.getNumAgents()
 
-        if index == 0:
-            depth += 1
+        if index==0: depth+=1
 
         if state.isWin() or state.isLose() or depth == self.depth:
             return self.evaluationFunction(state)
 
-        return self.min_state_utility(state, index, depth)
+        if index == 0:
+            return self.max_state_utility(state, index, depth)
+        else:
+            return self.min_state_utility(state, index, depth)
 
     def max_state_utility(self, state, index, depth):
         """
@@ -285,16 +287,17 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
         :return: The maximum utility value for the specified state.
         """
-
         index = (index+1) % state.getNumAgents()
 
-        if index == 0:
-            depth += 1
+        if index == 0: depth += 1
 
         if state.isWin() or state.isLose() or depth == self.depth:
             return self.evaluationFunction(state)
 
-        return self.min_state_utility(state, index, depth)
+        if index == 0:
+            return self.max_state_utility(state, index, depth, max_option, min_option)
+        else:
+            return self.min_state_utility(state, index, depth, max_option, min_option)
 
     def max_state_utility(self, state, index, depth, max_option, min_option):
         """
@@ -372,6 +375,12 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             if utility_value > max_utility:
                 max_utility = utility_value
                 best_action = action
+
+            if max_utility > min_option:
+                return best_action
+
+            max_option = max(max_option, max_utility)
+
         return best_action
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
@@ -393,13 +402,15 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         """
         index = (index+1) % state.getNumAgents()
 
-        if index == 0:
-            depth += 1
+        if index == 0: depth += 1
 
         if state.isWin() or state.isLose() or depth == self.depth:
             return self.evaluationFunction(state)
 
-        return self.min_state_utility(state, index, depth)
+        if index == 0:
+            return self.max_state_utility(state, index, depth+1, max_option, min_option)
+        else:
+            return self.exp_state_utility(state, index, depth, max_option, min_option)
 
     def max_state_utility(self, state, index, depth, max_option, min_option):
         """
