@@ -174,16 +174,15 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
         :return: The maximum utility value for the specified state.
         """
+        index = (index+1) % state.getNumAgents()
+
+        if index == 0:
+            depth += 1
 
         if state.isWin() or state.isLose() or depth == self.depth:
             return self.evaluationFunction(state)
 
-        index = (index+1) % state.getNumAgents()
-
-        if index == 0:
-            return self.max_state_utility(state, index, depth+1)
-        else:
-            return self.min_state_utility(state, index, depth)
+        return self.min_state_utility(state, index, depth)
 
     def max_state_utility(self, state, index, depth):
         """
@@ -287,15 +286,15 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         :return: The maximum utility value for the specified state.
         """
 
-        if state.isWin() or state.isLose() or depth == self.depth:
-            return self.evaluationFunction(state)
-
         index = (index+1) % state.getNumAgents()
 
         if index == 0:
-            return self.max_state_utility(state, index, depth+1, max_option, min_option)
-        else:
-            return self.min_state_utility(state, index, depth, max_option, min_option)
+            depth += 1
+
+        if state.isWin() or state.isLose() or depth == self.depth:
+            return self.evaluationFunction(state)
+
+        return self.min_state_utility(state, index, depth)
 
     def max_state_utility(self, state, index, depth, max_option, min_option):
         """
@@ -392,16 +391,15 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
         :return: The expected maximum utility value for the specified state.
         """
+        index = (index+1) % state.getNumAgents()
+
+        if index == 0:
+            depth += 1
 
         if state.isWin() or state.isLose() or depth == self.depth:
             return self.evaluationFunction(state)
 
-        index = (index+1) % state.getNumAgents()
-
-        if index == 0:
-            return self.max_state_utility(state, index, depth+1, max_option, min_option)
-        else:
-            return self.exp_state_utility(state, index, depth, max_option, min_option)
+        return self.min_state_utility(state, index, depth)
 
     def max_state_utility(self, state, index, depth, max_option, min_option):
         """
